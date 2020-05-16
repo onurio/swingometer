@@ -1,5 +1,13 @@
 .App {
   text-align: center;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.p5Canvas{
+  transform: rotate(180deg);
 }
 
 .App-logo {
