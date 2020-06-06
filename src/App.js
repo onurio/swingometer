@@ -12,55 +12,65 @@ import pan4 from './samples/pan4.wav';
 import P5Wrapper from 'react-p5-wrapper';
 import sketch from './components/Sketch';
 import { useReducer } from 'react';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+import Button from '@material-ui/core/Button';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import StopIcon from '@material-ui/icons/Stop';
+import { createMuiTheme,ThemeProvider } from '@material-ui/core/styles';
 
 
-
-// Tone.context.latencyHint = 'playback';
-// Tone.context.latencyHint = "balanced";
 
 const initialState = {count: 0};
 
+const theme = createMuiTheme({
+  typography: {
+    fontFamily: 'Architects Daughter',
+    body1:{
+      fontWeight: 800,
+      fontSize: 23,
+    },
+  },
+  palette:{
+    type: 'dark'
+  }
+});
+
 function reducer(state, action) {
   switch (action.type) {
-    case 'increment':
-      return {count: (state.count + 1)%4};
-    case 'decrement':
-      return {count: state.count - 1};
+    case 'setCount':      
+      return {count: action.count};    
     default:
       throw new Error();
   }
 }
 
 
-let counter=0;
 function App() { 
   const [amount,setAmount] = useState(50);
-  // const [loaded,setLoaded] = useState(false);
   const loop = useRef(null);
   const sampler = useRef(null);
+  const [isPlaying,setIsPlaying] = useState(false);
   const [bpm,setBpm] = useState(360);
   const [state, dispatch] = useReducer(reducer, initialState);
-
+  const [fixed,setFixed] = useState(true);
+  const count = useRef(0);
+  const canvasDiv = useRef(null);
   
   const handleChange =(e,value)=>{
-    
     let newAmount = value;
     loop.current.dispose();
-    loop.current = makeLoop(newAmount,sampler.current);
-    
+    loop.current = makeLoop(newAmount,sampler.current,isPlaying);
     setAmount(newAmount);
-
   }
 
-  const drawme=(time)=>{
+  const drawme=(time,beat)=>{
     Tone.Draw.schedule(function(){
-      //this callback is invoked from a requestAnimationFrame
-      //and will be invoked close to AudioContext time
-      dispatch({type:'increment'});
+      dispatch({type:'setCount',count:count.current});
     }, time-0.05)
   }
 
-  const makeLoop=(swing,sampler)=>{
+  const makeLoop=(swing,sampler,playState)=>{
     const brazil = swing<51;     
     swing = (swing-50)/1000;
     let beat = 60/Tone.Transport.bpm.value;
@@ -70,78 +80,67 @@ function App() {
     if(brazil){
       //Mirroring is close to hip hop
       newloop = new Tone.Loop(function(time){
-        counter=(counter+1)%4;
+        count.current = (count.current +1)%4;
         if(sampler.loaded){
           let newTime
-          switch(counter){
+          switch(count.current){
             case 0:
               sampler.triggerAttack('C5',time,0.7);
-              drawme(time);
+              drawme(time,0);
               break;
             case 1:
               newTime=time-((swing*beatBpmRatio)/2);
               sampler.triggerAttack('D5',newTime,0.7);
-              drawme(newTime)
+              drawme(newTime,1)
               break;
             case 2:
               newTime=time+swing*beatBpmRatio
               sampler.triggerAttack('E5',newTime,0.7);
-              drawme(newTime)
+              drawme(newTime,2)
               break;
             default:
               newTime=time+swing*(beatBpmRatio);
               sampler.triggerAttack('F5',newTime,0.7);
-              drawme(newTime)
+              drawme(newTime,3)
               break;
           }        
         }
-      }, "4n").start(0);
+      }, "4n");
     }else{
       // traditional jazz swing
-      // newloop = new Tone.Loop(function(time){
-      //   if(sampler.loaded){        
-      //     sampler.triggerAttack('C5',time,1);
-      //     sampler.triggerAttack('D5',time+beat+swing*beatBpmRatio,0.6);
-      //     sampler.triggerAttack('E5',time+beat*2,0.2);
-      //     sampler.triggerAttack('F5',time+beat*3+swing*(beatBpmRatio),0.7);   
-      //   }
-      // }, "1m").start(0);
       newloop = new Tone.Loop(function(time){
-        counter=(counter+1)%4;
+        count.current = (count.current +1)%4;
         if(sampler.loaded){
           let newTime
-          switch(counter){
+          switch(count.current){
             case 0:
               sampler.triggerAttack('C5',time,0.7);
-              drawme(time);
+              drawme(time,0);
               break;
             case 1:
-              newTime=time+swing*(beatBpmRatio);
+              newTime=time+swing*(beatBpmRatio)/2;
               sampler.triggerAttack('D5',newTime,0.7);
-              drawme(newTime)
+              drawme(newTime,1)
               break;
             case 2:
               sampler.triggerAttack('E5',time,0.7);
-              drawme(time)
+              drawme(time,2)
               break;
             default:
-              newTime=time+swing*(beatBpmRatio);
+              newTime=time+swing*(beatBpmRatio)/2;
               sampler.triggerAttack('F5',newTime,0.7);
-              drawme(newTime)
+              drawme(newTime,3)
               break;
           }        
         }
-      }, "4n").start(0);
-      
-      
+      }, "4n");      
     }
-    
-    
+    if(playState){
+      newloop.start(0);
+    }
     return newloop;
   }
 
-
-  
 
   useEffect(()=>{
     Tone.Transport.bpm.value = 360;
@@ -155,9 +154,11 @@ function App() {
       'F5': pan4
     },{onload:()=>{
       // setLoaded(true);
-      loop.current = makeLoop(50,sampler.current);
+      loop.current = makeLoop(50,sampler.current,false);
       loop.current.stop();
     }}).toMaster();
+    let button = document.getElementById('playButton');
+    canvasDiv.current.appendChild(button);
     // eslint-disable-next-line
   },[])
 
@@ -166,28 +167,60 @@ function App() {
   const handleBpmChange=(e,value)=>{
     let newBpm = value*4;
     Tone.Transport.bpm.value = newBpm;
-    loop.current.dispose();
-    loop.current = makeLoop(amount,sampler.current);
+    if(isPlaying){
+      loop.current.dispose();
+      loop.current = makeLoop(amount,sampler.current,isPlaying);  
+    }
     setBpm(newBpm);
   }
 
 
+  const handleToggle=()=>{
+    if(isPlaying){
+      setIsPlaying(false);
+      loop.current.stop('now');  
+    }else{
+      setIsPlaying(true);
+      loop.current.cancel();
+      loop.current.dispose();
+      loop.current = makeLoop(amount,sampler.current,true);  
+    }
+  }
 
 
   return (
     <div className="App">
-      {/* <input value={amount} onChange={handleChange} type="range" min="1" max="100"  id="swing"/> */}
-      <div style={{width:'100vw',display:'flex',justifyContent:'center',alignContent:'center',flexDirection:'column'}}>
-        <DiscreteSlider handleChange={handleChange}/>
-        <BpmSlider handleChange={handleBpmChange}/>
+      <ThemeProvider theme={theme}>
+      <div className='controls-container'>
+        <DiscreteSlider fixed={fixed} handleChange={handleChange}/>
+        <BpmSlider bpm={bpm} handleChange={handleBpmChange}/>
+        <FormControlLabel
+      className='switch'
+      control={
+        <Switch
+          checked={fixed}
+          onChange={e=>fixed?setFixed(false):setFixed(true)}
+          name="fixed/free"
+          color="primary"
+          size='small'
+        />
+      }
+      label="Fixed/Free"
+      />
+      <div id='playButton'>
+      <Button
+        variant="contained"
+        color={isPlaying?"secondary":'primary'}
+        onClick={e=>handleToggle()}
+      >
+      {!isPlaying?<PlayArrowIcon/>:<StopIcon/>}
+      </Button>
       </div>
-      <button onClick={e=>loop.current.stop('now')} >STOP</button>
-      <button onClick={e=>{
-        loop.current.cancel();
-        loop.current.dispose();
-        loop.current = makeLoop(amount,sampler.current);
-        }} >PLAY</button>
-      <P5Wrapper sketch={sketch} counter={state.count} swing={(amount-50)/100} />
+      </div>
+      </ThemeProvider>
+      <div style={{position:'relative'}} ref={canvasDiv}>
+        <P5Wrapper   sketch={sketch} counter={state.count} swing={(amount-50)/100} />
+      </div>
     </div>
   );
 }

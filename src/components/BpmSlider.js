@@ -6,8 +6,7 @@ import Slider from '@material-ui/core/Slider';
 const useStyles = makeStyles({
   root: {
     width:window.innerWidth>768?'30vw':'70vw',
-    margin: '5vh auto'
-
+    margin: window.innerWidth<769?'2vh auto':'3vh auto',
   },
 });
 
@@ -21,7 +20,7 @@ export default function BpmSlider(props) {
   return (
     <div className={classes.root}>
       <Typography id="discrete-slider" gutterBottom>
-        Bpm
+        BPM: {props.bpm/4}
       </Typography>
       <Slider
         onChange={props.handleChange}

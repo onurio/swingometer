@@ -5,42 +5,73 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-color: #34be54;
 }
 .p5Canvas{
   transform: rotate(180deg);
-}
-
-.App-logo {
-  height: 40vmin;
+  z-index: -1;
   pointer-events: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+#playButton{
+  position: absolute;
+  top: calc(50% - 3.25ch);
+  left: calc(50% - 3.25ch);
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+#playButton button{
+  min-height: 64px;
+  border-radius: 100%;
+}
+
+.switch{
+  position: absolute;
+  top: 2%;
+  left: 20px;
+  /* left: 48vw; */
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 4px 15px 4px 4px;
+  border-radius: 10px;
+}
+
+#unmute-button{
+  position: absolute;
+  --unmute-size: 50px !important;
+}
+
+.switch span{
+  font-size: 15px !important;
+}
+
+
+.controls-container{
+  position: relative;
+  width: 85vw;
+  top: 2vh;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
+  flex-direction: column;
+
+  padding: 19px;
+  border-radius: 10px;
+  background-color: #0000001f;
+
 }
 
-.App-link {
-  color: #61dafb;
-}
+@media only screen and (min-width: 769px) {
+  .controls-container{
+    width: 40vw;
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
   }
-  to {
-    transform: rotate(360deg);
+  .switch{
+    top: 5%;
+  }
+
+  .App{
+    flex-direction: row;
+  }
+  .p5Canvas{
+    margin-top: 0px;
   }
 }

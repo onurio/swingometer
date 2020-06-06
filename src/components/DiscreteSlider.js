@@ -3,14 +3,18 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 
+
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: window.innerWidth>768?'30vw':'70vw',
-    margin: '5vh auto'
+    margin: window.innerWidth<769?'2vh auto':'3vh auto',
+    color: 'white !important',
   },
   margin: {
     height: theme.spacing(3),
   },
+
 }));
 
 const marks = [
@@ -54,16 +58,17 @@ export default function DiscreteSlider(props) {
   return (
     <div className={classes.root}>
       <Typography id="discrete-slider-custom" gutterBottom>
-        Swing
+        SWING
       </Typography>
       <Slider
         onChange={props.handleChange}
         defaultValue={50}
         getAriaValueText={valuetext}
         aria-labelledby="discrete-slider-custom"
-        step={1/6*100}
         valueLabelDisplay="off"
         marks={marks}
+        step={props.fixed?(1/6*100):undefined}
+      
       />
     </div>
   );
