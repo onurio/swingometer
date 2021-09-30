@@ -1,22 +1,31 @@
 .App {
   text-align: center;
-  height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #34be54;
+  background-color: #000000;
+  padding-bottom: 10vh;
 }
+
+.controls-visuals{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .p5Canvas{
   transform: rotate(180deg);
-  z-index: -1;
+  z-index: 0;
   pointer-events: none;
 }
 
 #playButton{
   position: absolute;
-  top: calc(50% - 3.25ch);
-  left: calc(50% - 3.25ch);
+  top: calc(50% - 4ch);
+  left: calc(50% - 4ch);
 }
 
 #playButton button{
@@ -29,7 +38,7 @@
   top: 2%;
   left: 20px;
   /* left: 48vw; */
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(255,255,255, 0.2);
   padding: 4px 15px 4px 4px;
   border-radius: 10px;
 }
@@ -42,8 +51,12 @@
 .switch span{
   font-size: 15px !important;
 }
-
-
+#unmute-button{
+  fill: white;
+}
+a{
+  color: white;
+}
 .controls-container{
   position: relative;
   width: 85vw;
@@ -55,7 +68,7 @@
 
   padding: 19px;
   border-radius: 10px;
-  background-color: #0000001f;
+  background-color: #ffffff3b;
 
 }
 
@@ -64,11 +77,15 @@
     width: 40vw;
 
   }
+  .App{
+    height: 100vh;
+    padding: 0;
+  }
   .switch{
     top: 5%;
   }
 
-  .App{
+  .controls-visuals{
     flex-direction: row;
   }
   .p5Canvas{

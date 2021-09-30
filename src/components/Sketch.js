@@ -16,7 +16,7 @@ export default function sketch (p) {
         var newAngle = angle+factor/4;
         var x = r * p.sin(newAngle);
         var y = r * p.cos(newAngle);
-        c = p.color('rgba(40, 120, 185, 0.8)'); // Define color 'c'
+        c = p.color('rgba(207, 159, 78,0.7)'); // Define color 'c'
         p.fill(c);
         p.noStroke();
         p.ellipse(x, y, current===i?50:30);
@@ -68,7 +68,7 @@ export default function sketch (p) {
         //move 0,0 to the center of the screen
         p.translate(p.width / 2, p.height / 2);
         p.ellipse(0, 0, 200);
-        c = p.color('255, 010, 0'); // Define color 'c'
+        c = p.color('#59656F'); // Define color 'c'
         p.fill(c);
         //convert polar coordinates to cartesian coordinates
       
@@ -77,14 +77,14 @@ export default function sketch (p) {
           angle2 = (angle2 + step2)%(p.TWO_PI);
           var x2 = r * p.sin(angle2);
           var y2 = r * p.cos(angle2);  
-          c = p.color('#4c3e77'); // Define color 'c'
+          c = p.color('#59656F'); // Define color 'c'
           p.fill(c);
           p.ellipse(x2, y2, 6);
 
         }
         
         // p.arc(0, 0, 190, 190, -p.PI/2, 2*p.PI*counter2-p.PI/2,p.PIE);
-        c = p.color(255, 204, 0); // Define color 'c'
+        c = p.color('#59656F'); // Define color 'c'
         p.fill(c); // Use color variable 'c' as fill color
         //draw ellipse at every x,y point
         
@@ -93,7 +93,7 @@ export default function sketch (p) {
           counter = (counter+1)%4;
           var x1 = r * p.sin(angle);
           var y1 = r * p.cos(angle);
-          c = p.color('#2b1e1e'); // Define color 'c'
+          c = p.color('#59656F'); // Define color 'c'
           p.fill(c);
           p.ellipse(x1, y1, 10);
           if(brazilian){
@@ -145,7 +145,7 @@ export default function sketch (p) {
          
         };
         
-        c = p.color('#e0dd33'); // Update 'c' with grayscale value
+        c = p.color('#59A96A'); // Update 'c' with grayscale value
         p.fill(c);
 
   };

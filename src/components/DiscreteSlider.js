@@ -61,6 +61,7 @@ export default function DiscreteSlider(props) {
         SWING
       </Typography>
       <Slider
+        track={false}
         onChange={props.handleChange}
         defaultValue={50}
         getAriaValueText={valuetext}
