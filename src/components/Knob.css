@@ -1,0 +1,51 @@
+.knob {
+	height: 210px;
+	width: 210px;
+	background-color: transparent;
+	border: none;
+	cursor: pointer;
+	touch-action: none;
+}
+
+.knob-circle {
+	border-radius: 100%;
+	overflow: hidden;
+	background-color: black;
+	width: 210px;
+	height: 210px;
+}
+.knob-circle::before {
+	content: "";
+	position: absolute;
+	width: 0px;
+	height: 0px;
+	top: 5px;
+	background-color: transparent;
+	border-bottom: 40px solid black;
+	border-left: 30px solid transparent;
+	border-right: 30px solid transparent;
+	left: 50%;
+	z-index: 1100;
+	transform: translate(-50%, -100%);
+}
+
+.knob-container {
+	position: absolute;
+	top: 49%;
+	left: 51%;
+	transform: translate(-50%, 0%);
+}
+
+.knob-arrow {
+	/* position: absolute;
+	width: 0px;
+	height: 0px;
+	top: 2px;
+	background-color: transparent;
+	border-bottom: 30px solid black;
+	border-left: 20px solid transparent;
+	border-right: 20px solid transparent;
+	left: 50%;
+	z-index: 1100;
+	transform: translate(-50%, -100%); */
+}
