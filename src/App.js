@@ -29,6 +29,8 @@ import { blue, red } from "@material-ui/core/colors";
 import VolumeSlider from "./components/VolumeSlider";
 import SimpleSelect from "./components/SimpleSelect";
 import SwingMeter from "./components/SwingMeter";
+import { useDebounce } from "use-debounce/lib";
+import { FormControlLabel, Switch } from "@material-ui/core";
 
 const initialState = { count: 0 };
 
@@ -77,18 +79,24 @@ function App() {
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [bpm, setBpm] = useState(360);
 	const [state, dispatch] = useReducer(reducer, initialState);
-	// const [fixed, setFixed] = useState(true);
+	const [fixed, setFixed] = useState(true);
 	const count = useRef(0);
 	const canvasDiv = useRef(null);
 	const [volume, setVolume] = useState(50);
 	const [sample, setSample] = useState("Pandeiro");
+	const [debouncedAmount] = useDebounce(amount, 200);
 
 	const handleChange = (e, value) => {
 		let newAmount = value;
-		loop.current.dispose();
-		loop.current = makeLoop(newAmount, sampler.current, isPlaying);
 		setAmount(newAmount);
 	};
+
+	useEffect(() => {
+		if (loop.current) {
+			loop.current.dispose();
+			loop.current = makeLoop(debouncedAmount, sampler.current, isPlaying);
+		}
+	}, [debouncedAmount]);
 
 	const drawme = (time, beat) => {
 		Tone.Draw.schedule(function () {
@@ -254,22 +262,22 @@ function App() {
 			<div className="controls-visuals">
 				<ThemeProvider theme={theme}>
 					<div className="controls-container">
-						<SwingMeter onChange={handleChange} />
+						<SwingMeter fixed={fixed} onChange={handleChange} />
 						{/* <DiscreteSlider fixed={fixed} handleChange={handleChange} /> */}
 						<BpmSlider bpm={bpm} handleChange={handleBpmChange} />
-						{/* <FormControlLabel
+						<FormControlLabel
 							className="switch"
 							control={
 								<Switch
 									checked={fixed}
 									onChange={(e) => (fixed ? setFixed(false) : setFixed(true))}
-									name="fixed/free"
+									name="free/fixed"
 									color="primary"
 									size="small"
 								/>
 							}
-							label="Fixed/Free"
-						/> */}
+							label="Free/Fixed"
+						/>
 						<SimpleSelect
 							onChange={setSample}
 							options={["Pandeiro", "Snare", "Repenique"]}

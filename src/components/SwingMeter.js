@@ -12,7 +12,7 @@ const swingLevels = [
 	{ value: 7.5 / 9 },
 	{ value: 1 },
 ];
-export default function SwingMeter({ onChange }) {
+export default function SwingMeter({ onChange, fixed }) {
 	const [swingLevel, setSwingLevel] = useState(50);
 	const container = useRef(null);
 	const knob = useRef(null);
@@ -40,9 +40,22 @@ export default function SwingMeter({ onChange }) {
 		newAngle = Math.min(newAngle, 165);
 		newAngle = Math.max(newAngle, 15);
 		const swing = (newAngle - 15) / 150;
-		setSwingLevel(swing);
-		onChange(undefined, swing * 100);
-		setAngle(newAngle - 90);
+		const levelSize = 1 / swingLevels.length;
+		if (fixed) {
+			const swingAmount =
+				Math.abs(Math.round(swing / levelSize - 0.5)) / levelSize / 50;
+			setSwingLevel(swingAmount);
+
+			onChange(undefined, swingAmount * 100);
+
+			setAngle(newAngle - 90);
+		} else {
+			setSwingLevel(swing);
+
+			onChange(undefined, swing * 100);
+
+			setAngle(newAngle - 90);
+		}
 	};
 
 	const handleMouseDown = (e) => {
@@ -99,7 +112,7 @@ export default function SwingMeter({ onChange }) {
 				<button
 					ref={knob}
 					style={{
-						transform: `rotate(${isMoving ? angle : swingLevel * 160 - 80}deg)`,
+						transform: `rotate(${!fixed ? angle : swingLevel * 160 - 80}deg)`,
 					}}
 					className="knob"
 				>
