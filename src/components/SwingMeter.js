@@ -42,8 +42,10 @@ export default function SwingMeter({ onChange, fixed }) {
 		const swing = (newAngle - 15) / 150;
 		const levelSize = 1 / swingLevels.length;
 		if (fixed) {
-			const swingAmount =
-				Math.abs(Math.round(swing / levelSize - 0.5)) / levelSize / 50;
+			const swingAmount = Math.min(
+				Math.abs(Math.round(swing / levelSize)) / (swingLevels.length - 1),
+				1
+			);
 			setSwingLevel(swingAmount);
 
 			onChange(undefined, swingAmount * 100);
@@ -112,7 +114,9 @@ export default function SwingMeter({ onChange, fixed }) {
 				<button
 					ref={knob}
 					style={{
-						transform: `rotate(${!fixed ? angle : swingLevel * 160 - 80}deg)`,
+						transform: `rotate(${
+							!fixed && isMoving ? angle : swingLevel * 160 - 80
+						}deg)`,
 					}}
 					className="knob"
 				>
